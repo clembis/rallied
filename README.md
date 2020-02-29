@@ -6,7 +6,19 @@ Not usable at this time
 
 ### Description
 
-Based on Rally benchmark for Openstack : https://github.com/openstack/rally-openstack
+Based on Rally benchmark for Openstack (xrally) : https://github.com/openstack/rally-openstack
+Full documentation for Docker based xRally : https://github.com/openstack/rally/tree/master/etc/docker
+
+### Pre-Requisites
+
+```
+podman pull xrally/xrally-openstack
+podman image list
+mkdir -p /opt/rally/reports
+sudo chown -R 65500 /opt/rally
+podman run -v /opt/rally:/home/rally/.rally --name my-run docker.io/xrally/xrally-openstack plugin list --platform openstack
+podman run -v /opt/rally:/home/rally/.rally --name my-run docker.io/xrally/xrally-openstack db create 
+```
 
 ### Run those scripts 
 
@@ -17,11 +29,14 @@ Based on Rally benchmark for Openstack : https://github.com/openstack/rally-open
 2. Start a task based on files presents in subfolders
 
 ```
-rally task start sla_validation/minimal_requirements.yaml --task-args-file ./args/args.yaml
+podman run -v /opt/rally:/home/rally/.rally --name my-run docker.io/xrally/xrally-openstack env create --name my_openstack --spec example_env.json 
+podman run -v /opt/rally:/home/rally/.rally --name my-run docker.io/xrally/xrally-openstack env check 
+podman run -v /opt/rally:/home/rally/.rally --name my-run docker.io/xrally/xrally-openstack task start ./sla_validation/minimal_requirements.yaml --task-args {"image_name": "image_to_use", "flavor_name": "flavor_to_use"} 
+podman run -v /opt/rally:/home/rally/.rally --name my-run docker.io/xrally/xrally-openstack task report --out report.html
 ```
 
-3. Once your task has ended, you can output results 
+3. You can export existing results 
 
 ```
-rally task report <id> --out report.html
+podman run -v /opt/rally:/home/rally/.rally --name my-run docker.io/xrally/xrally-openstack task report <id> --out /home/rally/.rally/reports/report.html
 ```
