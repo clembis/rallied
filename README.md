@@ -16,8 +16,8 @@ podman pull xrally/xrally-openstack
 podman image list
 mkdir -p /opt/rally/reports
 sudo chown -R 65500 /opt/rally
-podman run -v /opt/rally:/home/rally/.rally --name my-run docker.io/xrally/xrally-openstack plugin list --platform openstack
-podman run -v /opt/rally:/home/rally/.rally --name my-run docker.io/xrally/xrally-openstack db create 
+podman run -v /opt/rally:/home/rally/.rally --name my-run docker.io/xrally/xrally-openstack db create && podman rm my-run
+podman run -v /opt/rally:/home/rally/.rally --name my-run docker.io/xrally/xrally-openstack plugin list --platform openstack && podman rm my-run
 ```
 
 ### Run those scripts 
@@ -29,10 +29,10 @@ podman run -v /opt/rally:/home/rally/.rally --name my-run docker.io/xrally/xrall
 2. Start a task based on files presents in subfolders
 
 ```
-podman run -v /opt/rally:/home/rally/.rally --name my-run docker.io/xrally/xrally-openstack env create --name my_openstack --spec example_env.json 
-podman run -v /opt/rally:/home/rally/.rally --name my-run docker.io/xrally/xrally-openstack env check 
-podman run -v /opt/rally:/home/rally/.rally --name my-run docker.io/xrally/xrally-openstack task start ./sla_validation/minimal_requirements.yaml --task-args {"image_name": "image_to_use", "flavor_name": "flavor_to_use"} 
-podman run -v /opt/rally:/home/rally/.rally --name my-run docker.io/xrally/xrally-openstack task report --out report.html
+podman run -v /opt/rally:/home/rally/.rally --name my-run docker.io/xrally/xrally-openstack env create --name my_openstack --spec example_env.json && podman rm my-run 
+podman run -v /opt/rally:/home/rally/.rally --name my-run docker.io/xrally/xrally-openstack env check && podman rm my-run
+podman run -v /opt/rally:/home/rally/.rally --name my-run docker.io/xrally/xrally-openstack task start ./sla_validation/minimal_requirements.yaml --task-args {"image_name": "image_to_use", "flavor_name": "flavor_to_use"} && podman rm my-run
+podman run -v /opt/rally:/home/rally/.rally --name my-run docker.io/xrally/xrally-openstack task report --out report.html && podman rm my-run
 ```
 
 3. You can export existing results 
