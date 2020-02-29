@@ -1,0 +1,13 @@
+{
+     "openstack": {
+         "auth_url": "https://lab.openstacklocal:13000/v3/",
+         "https_insecure": "True",
+         "region_name": "RegionOne",
+         "endpoint_type": "public",
+         "admin": {
+             "username": "admin",
+             "password": "xxxxx",
+             "tenant_name": "default"
+         }
+     }
+}

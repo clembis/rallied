@@ -1,0 +1,61 @@
+{% set image_name = image_name or "cirros" %}
+{% set flavor_name = flavor_name or "m1.small" %}
+{% set flavor_name_resize = flavor_name_resize or "m1.medium" %}
+---
+  Authenticate.keystone:
+  -
+    runner:
+      type: "rps"
+      times: 6000
+      rps: 50
+    context:
+      users:
+        tenants: 5
+        users_per_tenant: 10
+    sla:
+      max_avg_duration: 5
+      max_seconds_per_iteration: 10
+      failure_rate:
+        max: 0
+
+  NovaServers.boot_and_delete_server:
+  {% for i in range(1, 5, 15, 30) %}
+    -
+      args:
+        flavor:
+            name: {{flavor_name}}
+        image:
+            name: {{image_name}}
+      runner:
+        type: "constant"
+        times: 5
+        concurrency: {{i}}
+      sla:
+        failure_rate:
+          max: 0
+      context:
+        users:
+          tenants: 1
+          users_per_tenant: 1
+  {% endfor %}
+
+  NovaServers.resize_server:
+    -
+      args:
+        flavor:
+            name: {{flavor_name}}
+        image:
+            name: {{image_name}}
+        to_flavor:
+            name: {{flavor_name_resize}}
+      runner:
+        type: "constant"
+        times: 3
+        concurrency: 5
+      sla:
+        failure_rate:
+          max: 0
+      context:
+        users:
+          tenants: 1
+          users_per_tenant: 1

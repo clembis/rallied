@@ -1,0 +1,4 @@
+---
+  image_name: "CentOS-8"
+  flavor_name: "m1.large"
+  flavor_name_resize: "m1.xlarge"
